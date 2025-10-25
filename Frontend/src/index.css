@@ -1,0 +1,12 @@
+@import "tailwindcss";
+::-webkit-scrollbar{
+  display: none ;
+}
+body{
+  overflow-x: hidden;
+  background: linear-gradient(to bottom right, #434343, #000000);
+  color: #fff;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
