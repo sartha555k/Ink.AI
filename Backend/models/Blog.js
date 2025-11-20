@@ -5,8 +5,9 @@ const blogSchema = new mongoose.Schema({
     subTitle: { type: String, required: true },
     description: { type: String, required: true },
     category: { type: String, required: true },
-    image: { type: URL, required: true },
-    isPublished: { type: Boolean, required: true }
+    isPublished: { type: Boolean, required: true },
+    image: { type: String, required: true }
+    
 } , {timestamps : true})
 
 const Blog = mongoose.model('blog' , blogSchema)
