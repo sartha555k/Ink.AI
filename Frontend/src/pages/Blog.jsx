@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { data, useParams } from "react-router-dom";
 import { assets, blog_data, comments_data } from "../assets/assets";
 import NavBar from "../components/NavBar";
 import Moment from "moment";
-import Footer from "../components/Footer"
+import Footer from "../components/Footer";
 import Loader from "../components/Loader";
+import { useAppContext } from "../Context/AppContext";
+import toast from "react-hot-toast";
 
 const Blog = () => {
   const { id } = useParams();
@@ -12,16 +14,46 @@ const Blog = () => {
   const [comments, setComments] = useState([]);
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
+  const { axios } = useAppContext();
 
   const fetchBlogData = async () => {
-    const data = blog_data.find((item) => item._id === id);
-    setData(data);
+    try {
+      const { data } = await axios.get(`/api/blog/${id}`);
+      data.success ? setData(data.blog) : toast.error(data.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   const fetchComments = async () => {
-    setComments(comments_data);
+    try {
+      const { data } = await axios.post("/api/blog/comments", { blogId: id });
+      if (data.success) {
+        setComments(data.comments);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   const addComment = async (e) => {
-    e.preventDefault;
+    e.preventDefault();
+    try {
+      const { data } = await axios.post("/api/blog/add-comment", {
+        blog: id,
+        name,
+        content,
+      });
+      if (data.success) {
+        toast.success(data.message);
+        setName("");
+        setContent("");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   useEffect(() => {
     fetchBlogData();
@@ -85,7 +117,7 @@ const Blog = () => {
             onSubmit={addComment}
           >
             <input
-              onSubmit={(e) => setName(e.target.value())}
+              onChange={(e) => setName(e.target.value)}
               value={name}
               className="w-full p-2 border border-gray-300 rounded outline-none"
               type="text"
@@ -93,7 +125,7 @@ const Blog = () => {
               required
             />
             <textarea
-              onSubmit={(e) => setContent(e.target.value())}
+              onChange={(e) => setContent(e.target.value)}
               value={content}
               className="h-48 w-full p-2 border border-gray-300 rounded outline-none"
               placeholder="Comment"
@@ -121,10 +153,10 @@ const Blog = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   ) : (
-    <Loader/>
+    <Loader />
   );
 };
 

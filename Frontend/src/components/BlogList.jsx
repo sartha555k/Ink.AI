@@ -1,11 +1,23 @@
 import React, { useState } from "react";
 import { blogCategories } from "../assets/assets";
-import {motion as Motion} from "motion/react"
+import { motion as Motion } from "motion/react";
 import { blog_data } from "../assets/assets";
 import BlogCard from "./BlogCard";
+import { useAppContext } from "../Context/AppContext";
 
 const BlogList = () => {
   const [menu, setMenu] = useState("All");
+  const { blogs, input } = useAppContext();
+  const filteredBlogs = () => {
+    if (input === "") {
+      return blogs;
+    }
+    return blog_data.filter(
+      (blog) =>
+        blog.title.toLowerCase().includes(input.toLowerCase()) ||
+        blog.category.toLowerCase().includes(input.toLowerCase())
+    );
+  };
 
   return (
     <div>
@@ -14,30 +26,32 @@ const BlogList = () => {
           <div className="relative " key={item}>
             <button
               onClick={() => setMenu(item)}
-              className={`cursor-pointer text-gray-300 
-                ${menu === item && 'text-black px-4 pt-0.5'}`}
+              className={`cursor-pointer text-white font-bold
+                ${menu === item && "text-black px-4 pt-0.5"}`}
             >
               {item}
               {menu === item && (
                 <Motion.div
-                layoutId="underline"
-                transition={{type:'spring',
-                    stiffness:500,
-                    damping:30
-                }}
-
+                  layoutId="underline"
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   className="absolute left-0 
-                    right-0 top-0 h-7 -z-1 bg-gray-400 rounded-full"
+                    right-0 top-0 h-7 -z-1 bg-pink-400 rounded-full"
                 ></Motion.div>
               )}
             </button>
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4
-      gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40">
-        {blog_data.filter((blog)=>menu === "All" ? true : blog.category === menu)
-      .map((blog)=><BlogCard key={blog._id} blog={blog}/>) }</div>
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4
+      gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40"
+      >
+        {filteredBlogs()
+          .filter((blog) => (menu === "All" ? true : blog.category === menu))
+          .map((blog) => (
+            <BlogCard key={blog._id} blog={blog} />
+          ))}
+      </div>
     </div>
   );
 };

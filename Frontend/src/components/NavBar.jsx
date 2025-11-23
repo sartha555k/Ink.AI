@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../Context/AppContext";
 
 const NavBar = () => {
-  const navigate = useNavigate();
+  const {navigate, token} = useAppContext();
   return (
     <div
       className="flex justify-between items-center 
@@ -10,11 +11,14 @@ const NavBar = () => {
     >
       <div
       onClick={()=>navigate('/')} 
-      className="font-bold text-2xl w-32 sm:w-44 cursor-pointer">Ink.AI</div>
+      className="font-bold text-2xl w-32 sm:w-44 cursor-pointer text-pink-300">Ink.AI</div>
       <button
       onClick={()=>navigate('/admin')} 
       className="flex items-center gap-2 rounded-full
-      text-sm cursor-pointer bg-primary text-white bg-black px-10 py-2.5 border">Login</button>
+      text-sm cursor-pointer bg-primary text-black font-bold 
+      bg-pink-400 px-10 py-2.5 border hover:bg-black hover:text-white">
+        {token ? 'DashBoard': 'Login'}
+        </button>
     </div>
   );
 };

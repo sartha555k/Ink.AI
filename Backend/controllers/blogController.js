@@ -67,7 +67,7 @@ export const deleteBlogById = async (req, res) => {
         const { id } = req.body;
         await Blog.findByIdAndDelete(id)
 
-        await Comment.deleteMany({blog:id})
+        await Comment.deleteMany({ blog: id })
         res.json({ success: true, message: "Blog deleted successfully" });
     } catch (error) {
         res.json({ success: false, message: error.message });
@@ -104,10 +104,10 @@ export const getBlogComment = async (req, res) => {
     try {
         const { blogId } = req.body;
         const comments = await Comment.find({ blog: blogId, isApproved: true })
-            .sort({ cretedAt: -1 });
-        res.json({ success: true, message: comments })
+            .sort({ createdAt: -1 });
+        res.json({ success: true, comments ,message: "" })
     } catch (error) {
-        res.json({ success: false, comments: error.message })
+        res.json({ success: false, comments:[] , message:error.message })
     }
 }
 

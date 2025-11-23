@@ -27,8 +27,8 @@ export const getAllBlogsAdmin = async (req, res) => {
 
 export const getAllComments = async (req, res) => {
     try {
-        const comments = (await Comment.find({}).populate("blog"))
-            .toSorted({ createdAt: -1 })
+        const comments = await Comment.find({}).populate("blog")
+            .sort({ createdAt: -1 })
         res.json({ success: true, comments })
     } catch (error) {
         res.json({ success: false, message: error.message })
@@ -37,14 +37,14 @@ export const getAllComments = async (req, res) => {
 
 export const getDashboard = async (req, res) => {
     try {
-        const recentBlog = await Blog.find({}).sort({ createdAt: -1 }).limit(5)
+        const recentBlogs = await Blog.find({}).sort({ createdAt: -1 }).limit(5)
         const blogs = await Blog.countDocuments();
         const comments = await Comment.countDocuments();
-        const draft = await Blog.countDocuments({ isPublished: false });
+        const drafts = await Blog.countDocuments({ isPublished: false });
         const dashboardData = {
-            recentBlog, blogs, comments, draft
+            recentBlogs, blogs, comments, drafts
         }
-        res.json({ success: true, message: dashboardData })
+        res.json({ success: true, dashboardData })
     } catch (error) {
         res.json({ success: false, message: error.message })
     }
@@ -54,7 +54,7 @@ export const deleteCommentById = async (req, res) => {
     try {
         const { id } = req.body
         await Comment.findByIdAndDelete(id);
-        json({ success: true, message: "Comment deleted successfully" })
+        res.json({ success: true, message: "Comment deleted successfully" })
     } catch (error) {
         res.json({ success: false, message: error.message })
     }
@@ -64,7 +64,7 @@ export const approveCommentById = async (req, res) => {
     try {
         const { id } = req.body
         await Comment.findByIdAndUpdate(id, { isApproved: true });
-        json({ success: true, message: "Comment deleted successfully" })
+        res.json({ success: true, message: "Comment deleted successfully" })
     } catch (error) {
         res.json({ success: false, message: error.message })
     }

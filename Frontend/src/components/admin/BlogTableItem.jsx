@@ -1,9 +1,46 @@
 import React from "react";
 import { assets } from "../../assets/assets";
+import { useAppContext } from "../../Context/AppContext";
+import toast from "react-hot-toast";
 
 const BlogTableItem = ({ blog, fetchBlogs, index }) => {
   const { title, createdAt } = blog;
   const BlogDate = new Date(createdAt);
+  const { axios } = useAppContext();
+  const deleteBlog = async () => {
+    const confirm = window.confirm(
+      "Are you sure , you want to delete the blog"
+    );
+    if (!confirm) {
+      return;
+    }
+    try {
+      const { data } = await axios.post("/api/blog/delete", { id: blog._id });
+      if (data.success) {
+        toast.success(data.message);
+        fetchBlogs();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+  const togglePublish = async () => {
+    try {
+      const { data } = await axios.post("/api/blog/toggle-publish", {
+        id: blog._id,
+      });
+      if (data.success) {
+        toast.success(data.message);
+        fetchBlogs();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   return (
     <tr className="border-y border-gray-400">
       <th className="px-2 py-4">{index}</th>
@@ -13,15 +50,19 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
         <p
           className={`${blog.isPublished ? "text-green-600" : "text-red-500"}`}
         >
-          {blog.isPublished ? "Published" : "Unpublished"}
+          {blog.isPublished ? "Published" : "UnPublished"}
         </p>
       </td>
       <td className="px-4 py-2 flex text-xs gap-3">
-        <button className="border px-2 py-0.5 mt-1 rounded pointer-cursor">
-          {blog.isPublished ? "Published" : "Unpublished"}
+        <button onClick={togglePublish} className="border px-2 py-0.5 mt-1 rounded pointer-cursor">
+          {blog.isPublished ? "UnPublished" : "Published"}
         </button>
-        <img src={assets.cross_icon} className="w-8 hover:scale-110 transtion-all
-        cursor-pointer " />
+        <img
+          src={assets.cross_icon}
+          className="w-8 hover:scale-110 transtion-all
+        cursor-pointer "
+        onClick={deleteBlog}
+        />
       </td>
     </tr>
   );

@@ -26,6 +26,8 @@ export default defineConfig([
       // 'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z]' }],
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
+      'react-refresh/only-export-components': 'off'
+
     },
   },
 ])

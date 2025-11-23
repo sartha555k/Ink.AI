@@ -5,7 +5,7 @@ const Loader = () => {
     <div className="flex justify-center items-center h-screen">
       <div
         className="animate-spin rounded-full h-18 w-18 border-6
-       border-t-white border-y-gray-900"
+       border-t-pink-400 border-y-pink-400"
       ></div>
     </div>
   );
