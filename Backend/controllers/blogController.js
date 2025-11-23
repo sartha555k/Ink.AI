@@ -2,6 +2,7 @@ import fs from 'fs'
 import imagekit from '../config/imageKit.js'
 import Blog from '../models/Blog.js'
 import Comment from '../models/Comment.js'
+import main from '../config/gemini.js'
 
 
 export const addBlog = async (req, res) => {
@@ -105,9 +106,19 @@ export const getBlogComment = async (req, res) => {
         const { blogId } = req.body;
         const comments = await Comment.find({ blog: blogId, isApproved: true })
             .sort({ createdAt: -1 });
-        res.json({ success: true, comments ,message: "" })
+        res.json({ success: true, comments, message: "" })
     } catch (error) {
-        res.json({ success: false, comments:[] , message:error.message })
+        res.json({ success: false, comments: [], message: error.message })
     }
 }
 
+
+export const generateContent = async (req, res) => {
+    try {
+        const { prompt } = req.body;
+        const content = await main(prompt + 'Generate a blog content for this topic in single text formate')
+        res.json({ success: true, content })
+    } catch (error) {
+        res.json({ success: false, message: error.message })
+    }
+}
